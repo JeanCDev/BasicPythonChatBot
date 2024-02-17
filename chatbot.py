@@ -7,11 +7,14 @@
 # https://medium.com/@piyushbatra1999/installing-llama-cpp-python-with-nvidia-gpu-acceleration-on-windows-a-short-guide-0dfac475002d
 # give a python code to balance achievements points based on the gamification configured levels
 
+# pip freeze > requirements.txt - Cria o arquivo com as dependências do projeto
+
 
 import time
 from llama_cpp import Llama
 
-llm = Llama(model_path="codeninja-1.0-openchat-7b.Q8_0.gguf", n_gpu_layers=2048, n_ctx=512, n_batch=126)
+llm = Llama(model_path="amethyst-13b-mistral.Q6_K.gguf", n_gpu_layers=2048, n_ctx=512, n_batch=126)
+
 
 def generate_text(
     prompt,
@@ -28,11 +31,13 @@ def generate_text(
         top_p=top_p,
         echo=echo,
         stop=stop,
+        repeat_penalty=1.2
     )
 
     output_text = output["choices"][0]["text"].strip()
 
     return output_text
+
 
 def generate_prompt_from_template(question):
     chat_prompt_template = f"""<|im_start|>system
@@ -43,6 +48,16 @@ You are a helpful chatbot.<|im_end|>
     return chat_prompt_template
 
 
+def generate_prompt_from_template_amethyst(question):
+    chat_prompt_template = f"""Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+{question}
+
+### Response:"""
+
+    return chat_prompt_template
+
 
 def chat():
     question = input('Whats you question dumbass? ')
@@ -52,8 +67,9 @@ def chat():
     else:
         start_time = time.time()
 
+        # generate_prompt_from_template(question),
         answear = generate_text(
-            generate_prompt_from_template(question),
+            generate_prompt_from_template_amethyst(question),
             max_tokens=2048
         )
 
@@ -63,3 +79,4 @@ def chat():
 
 while True:
     chat()
+
